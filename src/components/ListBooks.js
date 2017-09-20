@@ -2,8 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import BooksGrid from './BooksGrid'
-import * as BooksAPI from './BooksAPI'
-import './App.css'
+import '../App.css'
 
 
 class ListBooks extends React.Component {
@@ -14,18 +13,6 @@ class ListBooks extends React.Component {
 
     static propTypes = {
         shelfBooks: PropTypes.array.isRequired
-    }
-
-    // Not sure how to invoke this method from SearchPage or App.js instead of having to repeat the code
-    updateShelf = (event, book) => {
-
-        book.shelf = event.target.value;
-
-        //setState to trigger a re-render:
-        this.setState({oneBook: book})
-
-        //update database
-        BooksAPI.update(book, book.shelf)
     }
 
 
@@ -49,7 +36,7 @@ class ListBooks extends React.Component {
 
                                 <BooksGrid
                                     books={currentlyReading}
-                                    onHandleChange={this.updateShelf}
+                                    onHandleChange={this.props.updateShelfApp}
                                 />
 
                             </div>
@@ -57,21 +44,18 @@ class ListBooks extends React.Component {
                         <div className="bookshelf">
                             <h2 className="bookshelf-title">Want to Read</h2>
                             <div className="bookshelf-books">
-
                                 <BooksGrid
                                     books={wantToRead}
-                                    onHandleChange={this.updateShelf}
+                                    onHandleChange={this.props.updateShelfApp}
                                 />
-
                             </div>
                         </div>
                         <div className="bookshelf">
                             <h2 className="bookshelf-title">Read</h2>
                             <div className="bookshelf-books">
-
                                 <BooksGrid
                                     books={read}
-                                    onHandleChange={this.updateShelf}
+                                    onHandleChange={this.props.updateShelfApp}
                                 />
                             </div>
                         </div>

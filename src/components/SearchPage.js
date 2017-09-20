@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import * as BooksAPI from './BooksAPI'
-import BooksGrid from './BooksGrid';
+import * as BooksAPI from '../BooksAPI'
+import BooksGrid from './BooksGrid'
 
 
 class SearchPage extends Component {
@@ -16,9 +16,7 @@ class SearchPage extends Component {
         this.setState( { query: query.trim() })
 
         //get all books that match the input query
-
         if (query.length > 0) {
-
             BooksAPI.search(query).then((searchResults) => {
                 this.setState({searchResults})
             })
@@ -27,23 +25,8 @@ class SearchPage extends Component {
         }
     }
 
-
     clearQuery = (query) => {
         this.setState({query: ''})
-    }
-
-
-    // Not sure how to invoke this method from ListBooks or App.js instead of having to repeat the code
-
-    updateShelf = (event, book) => {
-
-        book.shelf = event.target.value;
-
-        //setState to trigger a re-render:
-        //this.setState({oneBook: book})
-
-        //update database
-        BooksAPI.update(book, book.shelf)
     }
 
 
@@ -51,22 +34,24 @@ class SearchPage extends Component {
 
         let shelfBook, book;
 
-        //set all shelves to 'none'
-        for (book of this.state.searchResults) {
-            book.shelf = 'none';
-        }
+        if (this.state.searchResults.length > 0) {
 
-        //set the matching shelves
-        for (shelfBook of this.props.shelfBooks) {
+            //set all shelves to 'none'
             for (book of this.state.searchResults) {
+                book.shelf = 'none';
+            }
 
-                if (book.id === shelfBook.id) {
-                    book.shelf = shelfBook.shelf;
-                    continue
+            //set the matching shelves
+            for (shelfBook of this.props.shelfBooks) {
+                for (book of this.state.searchResults) {
+
+                    if (book.id === shelfBook.id) {
+                        book.shelf = shelfBook.shelf;
+                        continue
+                    }
                 }
             }
         }
-
 
         return (
 
@@ -79,24 +64,21 @@ class SearchPage extends Component {
                         Close
                     </Link>
                     <div className="search-books-input-wrapper">
-
                         <input
                             className='search-contacts'
-                            type='text'
+                            type='text' autoFocus
                             placeholder='Search by title or author'
                             value={this.state.query}
                             onChange={(event) => this.updateQuery(event.target.value)}
                         />
-
                     </div>
                 </div>
 
                 <div className="search-books-results">
                     <ol className="books-grid">
-
                         <BooksGrid
                             books={this.state.searchResults}
-                            onHandleChange={this.updateShelf}
+                            onHandleChange={this.props.updateShelfApp}
                         />
                     </ol>
                 </div>
@@ -107,5 +89,4 @@ class SearchPage extends Component {
 
 
 export default SearchPage
-
 
